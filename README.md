@@ -1,65 +1,78 @@
 # Happiness Prediction Project
 
-Este proyecto se centra en predecir el puntaje de felicidad de distintos países utilizando técnicas de Machine Learning, análisis exploratorio de datos (EDA), selección de características, transmisión de datos en tiempo real con Kafka, y almacenamiento en PostgreSQL.
+This project focuses on predicting the happiness score of different countries using Machine Learning techniques, exploratory data analysis (EDA), feature selection, real-time data streaming with Kafka, and storage in PostgreSQL.
 
 ---
 
-## Tabla de Contenidos
-1. [Descripción del Proyecto](#descripcion-del-proyecto)
-2. [Requisitos Previos](#requisitos-previos)
-3. [Estructura del Proyecto](#estructura-del-proyecto)
-4. [Configuración del Entorno](#configuracion-del-entorno)
-5. [Preparación de los Datos](#preparacion-de-los-datos)
-6. [Entrenamiento del Modelo](#entrenamiento-del-modelo)
-7. [Implementación de Kafka y PostgreSQL](#implementacion-de-kafka-y-postgresql)
-8. [Ejecución del Productor y Consumidor de Kafka](#ejecucion-del-productor-y-consumidor-de-kafka)
-9. [Evidencias de Resultados](#evidencias-de-resultados)
-10. [Conclusión](#conclusion)
+## Table of Contents
+1. [Project Description](#project-description)
+2. [Prerequisites](#prerequisites)
+3. [Project Structure](#project-structure)
+4. [Environment Setup](#environment-setup)
+5. [Data Preparation](#data-preparation)
+6. [Model Training](#model-training)
+7. [Kafka and PostgreSQL Implementation](#kafka-and-postgresql-implementation)
+8. [Kafka Producer and Consumer Execution](#kafka-producer-and-consumer-execution)
+9. [Evidence of [Results](#evidence-of-results)
+10. [Conclusion](#conclusion)
 
 ---
 
-### 1. Descripción del Proyecto <a name="descripcion-del-proyecto"></a>
-Este proyecto busca predecir el índice de felicidad de diferentes países en base a características como el PIB per cápita, la expectativa de vida saludable, la libertad personal, entre otros factores. Para ello:
-- Procesamos datos de felicidad de distintos años.
-- Aplicamos técnicas de selección de características.
-- Entrenamos un modelo de regresión.
-- Utilizamos Apache Kafka para transmitir las predicciones en tiempo real.
-- Almacenamos los resultados en PostgreSQL.
+### 1. Project Description <a name="project-description"></a>
+This project seeks to predict the happiness index of different countries based on characteristics such as GDP per capita, healthy life expectancy, personal freedom, among other factors. To do this:
+- We process happiness data from different years.
+- We apply feature selection techniques.
+- We train a regression model.
+- We use Apache Kafka to transmit the predictions in real time.
+- We store the results in PostgreSQL.
 
-### 2. Requisitos Previos <a name="requisitos-previos"></a>
+### 2. Prerequisites <a name="prerequisites"></a>
 - **Python 3.8+**
-- **Docker Desktop** para la implementación de contenedores.
-- **Kafka** y **PostgreSQL**.
-- **Jupyter Notebook** para EDA y entrenamiento de modelos.
-- Instalar los siguientes paquetes de Python:
+- **Docker Desktop** for container deployment.
+- **Kafka** and **PostgreSQL**.
+- **Jupyter Notebook** for EDA and model training.
+- Install the following Python packages:
 
 ```bash
 pip install pandas scikit-learn sqlalchemy kafka-python python-dotenv
 ```
 
-Todas las dependencias usadas están en el archivo requirements.txt.
+All dependencies used are in the requirements.txt file.
 
-## 3. Estructura del Proyecto <a name="estructura-del-proyecto"></a>
-La estructura del proyecto es la siguiente:
+## 3. Project Structure <a name="project-structure"></a>
+The structure of this project is as follows:
 
-├── data
-│   ├── raw                  # Datos originales de cada año
-│   ├── proccesed            # Datos procesados
-│   ├── clean                # Datos limpios
-│   └── test_results.csv     # Conjunto de datos para prueba
-├── models
-│   └── final_happiness_model.pkl   # Modelo de predicción entrenado
-├── src
-│   ├── kafka_producer.py    # Productor de Kafka para enviar predicciones
-│   └── kafka_consumer.py    # Consumidor de Kafka para almacenar predicciones en PostgreSQL
-├── notebooks
-│   ├── eda.ipynb            # Análisis exploratorio de datos
-│   └── model_training.ipynb # Entrenamiento del modelo de regresión
-└── README.md                # Este archivo
-│  
-└──docker-compose.yml        # Servicios para el broker de Kafka y ZooKeeper.
-│  
-└──requirements.txt          # Dependencias usadas
+### 📁 `data/`
+Contains the data files at different stages of processing.
+
+- **`raw/`**: Original data for each year.
+- **`processed/`**: Processed data.
+- **`clean/`**: Cleaned data ready for analysis.
+
+### 🤖 `models/`
+Contains the files related to the trained prediction model.
+
+- **`final_happiness_model.pkl`**: Trained prediction model that predicts the happiness score.
+
+### 💻 `src/`
+Contains the source code for data processing and streaming.
+
+- **`kafka_producer.py`**: Kafka producer to send predictions through Kafka.
+- **`kafka_consumer.py`**: Kafka consumer to store predictions in PostgreSQL.
+
+### 📓 `notebooks/`
+Contains the Jupyter notebooks used for model analysis and training.
+
+- **`eda.ipynb`**: Exploratory analysis of data from 2015 to 2019.
+- **`model_training.ipynb`**: Training of the regression model to predict the happiness score.
+
+### 🔧 Configuration files and dependencies
+
+- **`README.md`**: This file contains the project documentation.
+- **`docker-compose.yml`**: Configuration of the services for the Kafka broker and ZooKeeper.
+- **`requirements.txt`**: Dependencies required to run the project (includes libraries such as `pandas`, `scikit-learn`, `kafka-python`, among others).
+
+---
 
 ## 4. create virtual env
 
@@ -69,21 +82,20 @@ activate with :
 
 source venv/scripts/activate
 
+## 5. Environment Setup <a name="environment-setup"></a>
 
-## 5. Configuración del Entorno <a name="configuracion-del-entorno"></a>
-
-Crea un archivo .env en la raíz del proyecto para las credenciales de la base de datos PostgreSQL:
+Create a .env file in the project root for the PostgreSQL database credentials:
 
 DB_HOST=localhost
 DB_NAME=Happiness
 DB_USER=postgres
 DB_PASSWORD=root
-DATABASE_URL=postgresql://usuario:contraseña@localhost/nombre_ base_datos
+DATABASE_URL=postgresql://user:password@localhost/database_name
 
-## 6. Preparación de los Datos <a name="preparacion-de-los-datos"></a>
-Los datos originales se encuentran en data/raw. Realizamos la limpieza y estandarización de nombres de países, eliminamos valores nulos.
+## 6. Data Preparation <a name="data-preparation"></a>
+The original data is in data/raw. We clean and standardize country names, remove null values.
 
-Abrimos los siguientes notebooks en orden y ejecutamos las celdas para realizzar el proceso de limpieza y el gurado de los csv limpios:
+We open the following notebooks in order and run the cells to perform the cleaning process and save the clean csv files:
 
 notebooks/EDA_2015.ipynb
 notebooks/EDA_2016.ipynb
@@ -91,87 +103,80 @@ notebooks/EDA_2017.ipynb
 notebooks/EDA_2018.ipynb
 notebooks/EDA_2019.ipynb
 
-Despues de haberlos ejecutado te debe haber quedado en la carpeta data/clean los archivos limpios, ahora ejecutamos el siguiente notebook para añadir la columna region a los datasets de 2017,2018 y 2019 pra posteriormente hacer la concatenacion de los datos:
+After running them, you should have the clean files in the data/clean folder. Now we run the following notebook to add the region column to the 2017, 2018, and 2019 datasets to later concatenate the data:
 
 notebooks/merge.ipynb
 
+## 7. Model Training <a name="model-training"></a>
+Open the notebook notebooks/model_training.ipynb and run the cells to:
 
-## 7. Entrenamiento del Modelo <a name="entrenamiento-del-modelo"></a>
-Abre el notebook notebooks/model_training.ipynb y ejecuta las celdas para:
+Perform feature selection.
+Train a regression model to predict the happiness score.
+Evaluate and save the model with a satisfactory R² (at least 0.80).
+Save the trained model to models/final_happiness_model.pkl.
 
-Realizar la selección de características.
-Entrenar un modelo de regresión para predecir el puntaje de felicidad.
-Evaluar y guardar el modelo con un R² satisfactorio (al menos 0.80).
-Guarda el modelo entrenado en models/final_happiness_model.pkl.
+## 8. Kafka Setup with Docker <a name="Kafka_Setup_with_Docker"></a>
 
-## 8. Configuración de Kafka con Docker <a name="Configuración_de_Kafka_con_Docker"></a>
+Running the Container
 
-Ejecución del Contenedor
-
-Tenemos que tener la aplicación de Docker desktop abierta en nuestro ordenador y ejecutamos el comando en un git bash en nuestro proyecto
+We need to have the Docker desktop application open on our computer and run the command in a git bash in our project
 
 ```bash
 docker-compose up -d
 ```
 
-Este código inicira el contenedor, lo podemos verificar con:
+This code will start the container, we can verify it with:
 
 ```bash
 docker ps
 ```
 
-Ahora ejecutaremos el siguiente comando para crear un topic llmado happiness_predictions:
+Now we will run the following command to create a topic called happiness_predictions:
 
 ```bash
 docker exec -it happiness-countries-kafka-1 kafka-topics.sh \
-  --create \
-  --topic happiness_predictions \
-  --bootstrap-server localhost:9092 \
-  --partitions 1 \
-  --replication-factor 1
+--create \
+--topic happiness_predictions \
+--bootstrap-server localhost:9092 \
+--partitions 1 \
+--replication-factor 1
 ```
 
-Ahora nos aseguramos que el topic fue creado con este comando:
+Now we make sure that the topic was created with this command:
 
 ```bash
 docker exec -it happiness-countries-kafka-1 kafka-topics.sh \
-  --list \
-  --bootstrap-server localhost:9092
+--list \
+--bootstrap-server localhost:9092
 ```
 
+## 9. Running the Kafka Producer and Consumer <a name="running-the-kafka-producer-and-consumer"></a>
 
-
-## 9.  Ejecución del Productor y Consumidor de Kafka <a name="ejecucion-del-productor-y-consumidor-de-kafka"></a>
-
-Ejecutamos el script del productor para enviar predicciones al topic happiness_predictions:
+We run the producer script to send predictions to the happiness_predictions topic:
 
 ```bash
 python src/kafka_producer.py
 ```
 
-En otra terminal, ejecutamos el consumidor para leer los mensajes y guardarlos en PostgreSQL:
+In another terminal, we run the consumer to read the messages and save them in PostgreSQL:
 
 ```bash
 python src/kafka_consumer.py
 ```
 
-## 10.  Evidencias de Resultados <a name="evidencias-de-resultados"></a>
+## 10. Evidence of Results <a name="evidence-of-results"></a>
 
-Verifica las predicciones en PostgreSQL:
+Verify the predictions in PostgreSQL:
 
 ```bash
 SELECT * FROM happiness_predictions;
 ```
 
-## 11. Conclusión <a name="conclusion"></a>
-Este proyecto proporciona una solución completa para predecir y almacenar puntajes de felicidad a nivel global, integrando Machine Learning y sistemas de transmisión en tiempo real. La arquitectura construida es escalable y permite análisis continuos en base a datos actualizados de felicidad.
+## 11. Conclusion <a name="conclusion"></a>
+This project provides a complete solution to predict and store happiness scores at a global level, integrating Machine Learning and real-time streaming systems. The architecture built is scalable and allows continuous analysis based on updated happiness data.
 
-
-## Autores
+## Authors
 
 William Alejandro Botero Florez
 
-
-Este `README.md` tiene instrucciones detalladas y bien estructuradas que facilitan la navegación y ejecución del proyecto, cubriendo desde los requisitos previos hasta la implementación final.
-
-
+This `README.md` has detailed and well-structured instructions that make it easy to navigate and execute the project, covering everything from prerequisites to final implementation.
